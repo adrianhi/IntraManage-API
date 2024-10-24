@@ -1,3 +1,4 @@
+using IntraManage.Data.DTOs;
 using IntraManage.Data.Models;
 using IntraManage.Data.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -16,39 +17,59 @@ namespace IntraManage.Controllers
             _departmentRepository = departmentRepository;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Role>>> GetDepartments()
+        public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
         {
-            var payload = await _departmentRepository.GetAllDepartments();
-            ApiResponse<IEnumerable<Department>> res = new();
+            var departments = await _departmentRepository.GetAllDepartments();
 
-            if (payload is null)
+            if (departments == null)
             {
-                res.code = 404;
-                res.hasError = true;
-                return NotFound(res);
+                return NotFound(new ApiResponse<IEnumerable<DepartmentDto>>
+                {
+                    code = 404,
+                    hasError = true,
+                    payload = null
+                });
             }
-            res.code = 200;
-            res.hasError = false;
-            res.payload = payload;
-            return Ok(res);
-        }
+
+            var departmentDtos = departments.Select(d => new DepartmentDto
+            {
+                Id = d.Id,
+                DepartmentName = d.DepartmentName
+            });
+
+            return Ok(new ApiResponse<IEnumerable<DepartmentDto>>
+            {
+                code = 200,
+                hasError = false,
+                payload = departmentDtos
+            });
+        
+    }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Role>> GetDepartment(int id)
+        public async Task<ActionResult<ApiResponse<DepartmentDto>>> GetDepartment (int id)
         {
-            var payload = await _departmentRepository.GetDepartmentById(id);
-            ApiResponse<Object> res = new();
+            var department = await _departmentRepository.GetDepartmentById(id);
+            ApiResponse<DepartmentDto> res = new();
 
-            if (payload is null)
+            if (department is null)
             {
                 res.code = 404;
                 res.hasError = true;
                 return NotFound(res);
             }
+
+            var departmentDto = new DepartmentDto
+            {
+                Id = department.Id,
+                DepartmentName = department.DepartmentName
+            };
+
             res.code = 200;
             res.hasError = false;
-            res.payload = payload;
+            res.payload = departmentDto;
             return Ok(res);
         }
+
     }
 }

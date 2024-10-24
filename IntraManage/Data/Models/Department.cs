@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace IntraManage.Data.Models;
+﻿namespace IntraManage.Data.Models;
 
 public partial class Department
 {

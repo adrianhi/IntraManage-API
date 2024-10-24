@@ -1,11 +1,13 @@
-﻿using IntraManage.Data.Models;
+﻿using IntraManage.Data.DTOs;
+
 namespace IntraManage.Data.Repositories.Interfaces
 {
     public interface IEmployeeRepository
     {
-        Task<IEnumerable<Employee>> GetAllEmployees();
-        Task<Employee> GetEmployeeById(int id);
-        Task AddEmployee(Employee employee);
+        Task<IEnumerable<GetEmployeeDto>> GetAllEmployees ( );    
+        Task<GetEmployeeDto> GetEmployeeById (int id);             
+        Task<GetEmployeeDto> CreateEmployee (PostEmployeeDto employee);  
+        Task<LoginResponseDto> Authenticate (LoginRequestDto loginDto);
 
     }
 }

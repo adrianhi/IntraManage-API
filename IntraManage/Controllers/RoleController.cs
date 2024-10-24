@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using IntraManage.Data.Models;
-using IntraManage.Data.Repositories.Interfaces; 
+using IntraManage.Data.Repositories.Interfaces;
+using IntraManage.Data.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -17,11 +19,12 @@ public class RoleController : ControllerBase
     }
 
     // GET: api/roles
+    [Authorize]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Role>>> GetRoles()
+    public async Task<ActionResult<IEnumerable<RoleDto>>> GetRoles()
     {
         var payload = await _roleRepository.GetAllRoles();
-        ApiResponse<IEnumerable<Role>> res = new();
+        ApiResponse<IEnumerable<RoleDto>> res = new();
 
         if (payload is null)
         {
@@ -37,7 +40,7 @@ public class RoleController : ControllerBase
 
     // GET: api/roles/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Role>> GetRole(int id)
+    public async Task<ActionResult<RoleDto>> GetRole(int id)
     {
         var payload = await _roleRepository.GetRoleById(id);
         ApiResponse<Object> res = new();

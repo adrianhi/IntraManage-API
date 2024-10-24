@@ -1,10 +1,10 @@
-﻿using IntraManage.Data.Models;
+﻿using IntraManage.Data.DTOs;
 
 namespace IntraManage.Data.Repositories.Interfaces
 {
     public interface IDepartmentRepository
     {
-        Task<IEnumerable<Department>> GetAllDepartments();
-        Task<Department> GetDepartmentById(int id);
+        Task<IEnumerable<DepartmentDto>> GetAllDepartments();
+        Task<DepartmentDto> GetDepartmentById(int id);
     }
 }
