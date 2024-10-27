@@ -34,5 +34,8 @@ namespace IntraManage.Controllers
             res.payload = auth;
             return Ok(res);
         }
+
+      
+
     }
 }

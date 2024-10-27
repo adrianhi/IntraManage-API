@@ -18,7 +18,7 @@ namespace IntraManage.Data.DTOs
 
         public string PasswordHash { get; set; } = null!;
 
-        public string Cedula { get; set; } = null!;
+        public IFormFile CedulaFile { get; set; } = null!;
         public int? RoleId { get; set; }
         public int? DepartmentId { get; set; }
 

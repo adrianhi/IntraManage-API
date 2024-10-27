@@ -27,7 +27,6 @@ namespace IntraManage.Data.Repositories.Implementations
 
         public async Task<RoleDto> GetRoleById (int id)
         {
-            // Fetch the role and map it to RoleDto
             var role = await _context.Roles.FindAsync(id);
 
             if (role == null)
