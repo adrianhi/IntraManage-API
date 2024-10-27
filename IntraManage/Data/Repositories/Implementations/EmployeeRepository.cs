@@ -21,7 +21,6 @@ namespace IntraManage.Data.Repositories.Implementations
 
         public async Task<LoginResponseDto> Authenticate (LoginRequestDto loginDto)
         {
-            // Fetch the employee based on email
             var employee = await _context.Employees
                 .Include(e => e.Role)
                 .Include(e => e.Department)
@@ -60,7 +59,6 @@ namespace IntraManage.Data.Repositories.Implementations
 
 
 
-
         public async Task<GetEmployeeDto> CreateEmployee (PostEmployeeDto employeeDto)
         {
             var validationResults = new List<ValidationResult>();
@@ -78,12 +76,25 @@ namespace IntraManage.Data.Repositories.Implementations
 
             var hashedPassword = BCrypt.Net.BCrypt.HashPassword(employeeDto.PasswordHash);
 
+            string cedulaFilePath = null;
+            if (employeeDto.CedulaFile != null && employeeDto.CedulaFile.Length > 0)
+            {
+                var uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Cedulas");
+                Directory.CreateDirectory(uploadFolder); 
+                cedulaFilePath = Path.Combine(uploadFolder, employeeDto.CedulaFile.FileName);
+
+                using (var stream = new FileStream(cedulaFilePath, FileMode.Create))
+                {
+                    await employeeDto.CedulaFile.CopyToAsync(stream);
+                }
+            }
+
             var employee = new Employee
             {
                 Name = employeeDto.Name,
                 Email = employeeDto.Email,
                 PasswordHash = hashedPassword,
-                Cedula = employeeDto.Cedula,
+                Cedula = cedulaFilePath,
                 RoleId = employeeDto.RoleId,
                 DepartmentId = employeeDto.DepartmentId
             };
@@ -91,7 +102,6 @@ namespace IntraManage.Data.Repositories.Implementations
             await _context.Employees.AddAsync(employee);
             await _context.SaveChangesAsync();
 
-            // Fetch the newly created employee with the role and department names
             var role = await _context.Roles.FindAsync(employee.RoleId);
             var department = await _context.Departments.FindAsync(employee.DepartmentId);
 
@@ -100,21 +110,20 @@ namespace IntraManage.Data.Repositories.Implementations
                 Id = employee.Id,
                 Name = employee.Name,
                 Email = employee.Email,
-                Cedula = employee.Cedula,
-                RoleName = role?.RoleName, 
-                DepartmentName = department?.DepartmentName 
+                Cedula = cedulaFilePath, 
+                RoleName = role?.RoleName,
+                DepartmentName = department?.DepartmentName
             };
 
             return employeeDtoToReturn;
         }
 
 
-
         public async Task<GetEmployeeDto> GetEmployeeById (int id)
         {
             var employee = await _context.Employees
-                .Include(e => e.Role) // Include related Role
-                .Include(e => e.Department) // Include related Department
+                .Include(e => e.Role)
+                .Include(e => e.Department) 
                 .SingleOrDefaultAsync(e => e.Id == id);
 
             if (employee == null)
@@ -131,12 +140,11 @@ namespace IntraManage.Data.Repositories.Implementations
             };
         }
 
-        // Method to get all employees
         public async Task<IEnumerable<GetEmployeeDto>> GetAllEmployees ( )
         {
             return await _context.Employees
-                .Include(e => e.Role) 
-                .Include(e => e.Department) 
+                .Include(e => e.Role)
+                .Include(e => e.Department)
                 .Select(e => new GetEmployeeDto
                 {
                     Id = e.Id,

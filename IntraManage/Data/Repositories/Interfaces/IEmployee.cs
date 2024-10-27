@@ -9,5 +9,6 @@ namespace IntraManage.Data.Repositories.Interfaces
         Task<GetEmployeeDto> CreateEmployee (PostEmployeeDto employee);  
         Task<LoginResponseDto> Authenticate (LoginRequestDto loginDto);
 
+
     }
 }

@@ -1,12 +1,14 @@
 using IntraManage.Data.DTOs;
 using IntraManage.Data.Models;
 using IntraManage.Data.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IntraManage.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
+
     public class DepartmentController : ControllerBase
     {
 
@@ -16,6 +18,8 @@ namespace IntraManage.Controllers
         {
             _departmentRepository = departmentRepository;
         }
+
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
         {
@@ -45,7 +49,7 @@ namespace IntraManage.Controllers
             });
         
     }
-
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResponse<DepartmentDto>>> GetDepartment (int id)
         {

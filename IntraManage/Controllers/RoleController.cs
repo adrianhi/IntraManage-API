@@ -12,13 +12,11 @@ public class RoleController : ControllerBase
 {
     private readonly IRoleRepository _roleRepository;
 
-    // Constructor with dependency injection
     public RoleController(IRoleRepository roleRepository)
     {
         _roleRepository = roleRepository;
     }
 
-    // GET: api/roles
     [Authorize]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<RoleDto>>> GetRoles()
@@ -38,7 +36,7 @@ public class RoleController : ControllerBase
         return Ok(res);
     }
 
-    // GET: api/roles/5
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<RoleDto>> GetRole(int id)
     {
